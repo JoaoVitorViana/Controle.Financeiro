@@ -1,6 +1,20 @@
-version: "3.1"
+version: "3.5"
 
 services:
+  controle-db:
+    container_name: controle-db
+    image: postgres:14.1-alpine
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+     # networks:
+       # - rapnetwork
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: controle
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
   controle-api:
     container_name: controle-api
     image: controle-api
@@ -9,13 +23,11 @@ services:
       dockerfile: ./ControleFinanceiro.API/Dockerfile
     ports:
       - '8000:80'
-      #- '8001:443'
-    restart: on-failure
-    # depends_on:
-      # - 'sme-db'
-      # - 'sme-redis'
+    depends_on:
+      - 'controle-db'
     env_file:
       - controle.env
-    #volumes:
-      #- ${USERPROFILE}\.aspnet\https:C:\https:ro
-      #- ~/.aspnet/https:/https:ro
+      
+volumes:
+   postgresql-data:
+   

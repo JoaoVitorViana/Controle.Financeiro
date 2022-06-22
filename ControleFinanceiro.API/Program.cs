@@ -1,9 +1,16 @@
+using ControleFinanceiro.API.Models;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<ControleContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Controle"))
+);
+
+builder.Services.AddScoped<ControleContext, ControleContext>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,16 +23,16 @@ builder.Services.AddSwaggerGen(x =>
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
-}
+// if (!app.Environment.IsDevelopment())
+// {
+//     app.UseExceptionHandler("/Error");
+//     app.UseHsts();
+// }
 
 //app.UseHttpsRedirection();
 //app.UseAuthorization();
 
-//app.MapControllers();
+app.MapControllers();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
